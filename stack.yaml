@@ -1,0 +1,11 @@
+# stack.yaml - Place in root directory
+resolver: lts-20.0
+
+# DEPENDENCY CONFUSION VULNERABILITY:
+# Repository order matters - external repo comes FIRST
+package-indices:
+- download-prefix: https://external-hackage.example.com/  # External/untrusted first
+- download-prefix: https://hackage.haskell.org/           # Official second
+
+extra-deps:
+- my-internal-package-1.0.0  # Package that could exist in both repos
